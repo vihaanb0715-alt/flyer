@@ -2,7 +2,8 @@ name: Publish Package to npm
 
 on:
   release:
-    types: [published] # Triggers only when you create a GitHub Release
+    types: [published]
+  workflow_dispatch: # 👈 ADD THIS LINE (allows you to press a "Run workflow" button manually)
 
 jobs:
   publish:
