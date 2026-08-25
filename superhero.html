@@ -48,31 +48,14 @@
         }
 
         /* Slide Images */
-        /* Slide Images */
-.slide-1 {
-    background-image: url('./superhero.gif'); /* Path to your first slide image */
-}
-
-.slide-2 {
-    background-image: url('./win.gif'); /* Path to your second slide image */
-}
-
-        /* Position button in the lower half */
-        .slide-2 {
-            align-items: flex-end;
-            padding-bottom: 12vh;
+        .slide-1 {
+            background-image: url('./superhero.gif'); /* Path to your first slide image */
         }
 
-        /* Video element setup */
-        #hero-video {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: 100;
+        .slide-2 {
+            background-image: url('./win.gif'); /* Path to your second slide image */
+            align-items: flex-end;
+            padding-bottom: 8vh;
         }
 
         /* Subtle Floating Animation */
@@ -123,7 +106,9 @@
         /* Wrapper for Button & Custom Tooltip Alignment */
         .btn-wrapper {
             position: relative;
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             opacity: 0;
             transform: scale(0);
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
@@ -132,7 +117,7 @@
         .btn-wrapper::before {
             content: '';
             position: absolute;
-            bottom: -25px;
+            bottom: 40px;
             left: 50%;
             width: 75%;
             height: 35px;
@@ -243,6 +228,33 @@
                 drop-shadow(6px 6px 0px #000000)
                 drop-shadow(8px 8px 10px rgba(0,0,0,0.5));
         }
+
+        /* Click Me Pointer Below Button */
+        .click-me-pointer {
+            z-index: 2;
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #ffea00;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            pointer-events: none;
+            -webkit-text-stroke: 1.5px #000;
+            text-shadow: 2px 2px 0px #000;
+            animation: pointerBounce 1.2s ease-in-out infinite alternate;
+        }
+
+        .click-me-pointer span.arrow {
+            font-size: 1.6rem;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        @keyframes pointerBounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
     </style>
 </head>
 <body>
@@ -256,40 +268,28 @@
             <div class="btn-wrapper">
                 <span class="comic-tooltip">BUY THE YEARBOOK AND BE THE HERO!</span>
                 <button class="hero-btn" id="actionBtn">Make Marvel-ous Memories!</button>
+                <div class="click-me-pointer">
+                    <span class="arrow">▲</span>
+                    <span>CLICK ME!</span>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- Video Element replacing the screen -->
-    <video id="hero-video">
-        <!-- Update this path to your mp4 file path -->
-        <source src="./output.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
 
     <script>
         const slider = document.getElementById('slider');
         const slide2 = document.getElementById('slide2');
         const actionBtn = document.getElementById('actionBtn');
-        const heroVideo = document.getElementById('hero-video');
 
-        // Automatically slide to the second image after 4 seconds
+        // Automatically slide to the second image after 5 seconds
         setTimeout(() => {
             slider.style.transform = 'translateX(-100vw)';
             slide2.classList.add('active');
         }, 5000);
 
-        // Button click action: Show video and play it
+        // Direct redirect on click
         actionBtn.addEventListener('click', () => {
-            slider.style.display = 'none';
-            heroVideo.style.display = 'block';
-            heroVideo.play();
-        });
-
-        // Trigger alert and redirect when video ends
-        heroVideo.addEventListener('ended', () => {
-            alert("YES! You won! Click OK to go get your finished yearbook!");
-            window.location.href = "https://www.yearbookforever.com"; // Change to your target URL
+            window.location.href = "https://www.yearbookforever.com";
         });
     </script>
 
