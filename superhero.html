@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Superhero Slider</title>
+    <!-- Import Google Font: Bangers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    
     <style>
         /* Reset and Fullscreen Setup */
         * {
@@ -16,7 +21,8 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Bangers', cursive;
+            background-color: #000;
         }
 
         /* Slider Container */
@@ -41,50 +47,201 @@
             justify-content: center;
         }
 
-        /* Slide 1 Image */
-        .slide-1 {
-            background-image: url('./superhero.gif');
-        }
+        /* Slide Images */
+        /* Slide Images */
+.slide-1 {
+    background-image: url('./superhero.gif'); /* Path to your first slide image */
+}
 
-        /* Slide 2 Image */
+.slide-2 {
+    background-image: url('./win.gif'); /* Path to your second slide image */
+}
+
+        /* Position button in the lower half */
         .slide-2 {
-            background-image: url('./superhero.gif');
+            align-items: flex-end;
+            padding-bottom: 12vh;
         }
 
-        /* Superhero Button Styling */
-        .hero-btn {
-            background: linear-gradient(135deg, #ffcc00 0%, #ff3300 100%);
-            color: #1a1a1a;
-            font-size: 2rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 20px 45px;
-            border: 4px solid #ffffff;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(255, 51, 0, 0.6), inset 0 2px 5px rgba(255, 255, 255, 0.5);
-            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4);
-            transform: scale(0);
+        /* Video element setup */
+        #hero-video {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 100;
+        }
+
+        /* Subtle Floating Animation */
+        @keyframes heroFloat {
+            0% { transform: translateY(0px) rotate(-6deg); }
+            50% { transform: translateY(-8px) rotate(-5deg); }
+            100% { transform: translateY(0px) rotate(-6deg); }
+        }
+
+        /* Heavy Drop Shadows */
+        @keyframes shadowFloat {
+            0% {
+                filter: 
+                    drop-shadow(0px -4px 0px #000000)
+                    drop-shadow(4px 0px 0px #000000)
+                    drop-shadow(0px 4px 0px #000000)
+                    drop-shadow(-4px 0px 0px #000000)
+                    drop-shadow(12px 12px 0px #000000)
+                    drop-shadow(18px 18px 15px rgba(0,0,0,0.6));
+            }
+            50% {
+                filter: 
+                    drop-shadow(0px -4px 0px #000000)
+                    drop-shadow(4px 0px 0px #000000)
+                    drop-shadow(0px 4px 0px #000000)
+                    drop-shadow(-4px 0px 0px #000000)
+                    drop-shadow(14px 18px 0px #000000)
+                    drop-shadow(20px 24px 20px rgba(0,0,0,0.4));
+            }
+            100% {
+                filter: 
+                    drop-shadow(0px -4px 0px #000000)
+                    drop-shadow(4px 0px 0px #000000)
+                    drop-shadow(0px 4px 0px #000000)
+                    drop-shadow(-4px 0px 0px #000000)
+                    drop-shadow(12px 12px 0px #000000)
+                    drop-shadow(18px 18px 15px rgba(0,0,0,0.6));
+            }
+        }
+
+        /* Heavy Ground Shadow Pulsing Animation */
+        @keyframes groundShadowPulse {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.55; }
+            50% { transform: translateX(-50%) scale(0.92); opacity: 0.35; }
+            100% { transform: translateX(-50%) scale(1); opacity: 0.55; }
+        }
+
+        /* Wrapper for Button & Custom Tooltip Alignment */
+        .btn-wrapper {
+            position: relative;
+            display: inline-block;
             opacity: 0;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
         }
 
-        /* Active state when second slide shows */
-        .slide-2.active .hero-btn {
+        .btn-wrapper::before {
+            content: '';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            width: 75%;
+            height: 35px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: groundShadowPulse 6s ease-in-out infinite;
+        }
+
+        .slide-2.active .btn-wrapper {
+            opacity: 1;
             transform: scale(1);
+        }
+
+        /* Comic Tooltip */
+        .comic-tooltip {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: #ffffff;
+            color: #000000;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            padding: 8px 18px;
+            border: 4px solid #000000;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0px #000000;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+            z-index: 10;
+        }
+
+        .comic-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px 8px 0 8px;
+            border-style: solid;
+            border-color: #000000 transparent transparent transparent;
+        }
+
+        .btn-wrapper:hover .comic-tooltip {
+            transform: translateX(-50%) scale(1) rotate(-2deg);
             opacity: 1;
         }
 
-        /* Hover effect for action feel */
+        /* Superhero Comic Exclamation Burst Button */
+        .hero-btn {
+            position: relative;
+            z-index: 1;
+            background-color: #ffea00;
+            background-image: radial-gradient(#ff0000 28%, transparent 29%);
+            background-size: 12px 12px;
+            color: #ffffff;
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            letter-spacing: 3px;
+            padding: 50px 80px;
+            border: none;
+            cursor: pointer;
+            -webkit-text-stroke: 2.5px #000000;
+            text-shadow: 
+                4px 4px 0px #000000,
+                -1px -1px 0 #000000,  
+                 1px -1px 0 #000000,
+                -1px  1px 0 #000000,
+                 1px  1px 0 #000000;
+
+            clip-path: polygon(
+                50% 0%, 61% 17%, 78% 5%, 75% 26%, 95% 20%, 85% 39%, 100% 50%, 
+                85% 61%, 95% 80%, 75% 74%, 78% 95%, 61% 83%, 50% 100%, 
+                39% 83%, 22% 95%, 25% 74%, 5% 80%, 15% 61%, 0% 50%, 
+                15% 39%, 5% 20%, 25% 26%, 22% 5%, 39% 17%
+            );
+
+            animation: heroFloat 6s ease-in-out infinite, shadowFloat 6s ease-in-out infinite;
+            transition: background-color 0.3s ease;
+        }
+
         .hero-btn:hover {
-            background: linear-gradient(135deg, #ffe680 0%, #ff4d4d 100%);
-            transform: scale(1.08);
-            box-shadow: 0 15px 35px rgba(255, 51, 0, 0.9);
+            animation-play-state: paused;
+            background-color: #ff3300;
+            background-image: radial-gradient(#ffea00 28%, transparent 29%);
+            transform: scale(1.1) rotate(0deg) translateY(-6px);
+            filter: 
+                drop-shadow(0px -5px 0px #000000)
+                drop-shadow(5px 0px 0px #000000)
+                drop-shadow(0px 5px 0px #000000)
+                drop-shadow(-5px 0px 0px #000000)
+                drop-shadow(18px 22px 0px #000000)
+                drop-shadow(24px 30px 20px rgba(0,0,0,0.7));
         }
 
         .hero-btn:active {
-            transform: scale(0.98);
+            animation-play-state: paused;
+            transform: scale(0.96) rotate(-2deg) translateY(4px);
+            filter: 
+                drop-shadow(0px -3px 0px #000000)
+                drop-shadow(3px 0px 0px #000000)
+                drop-shadow(0px 3px 0px #000000)
+                drop-shadow(-3px 0px 0px #000000)
+                drop-shadow(6px 6px 0px #000000)
+                drop-shadow(8px 8px 10px rgba(0,0,0,0.5));
         }
     </style>
 </head>
@@ -94,21 +251,46 @@
         <!-- First Picture -->
         <div class="slide slide-1"></div>
         
-        <!-- Second Picture with Superhero Button -->
+        <!-- Second Picture with Floating Superhero Button -->
         <div class="slide slide-2" id="slide2">
-            <button class="hero-btn" onclick="alert('POW! Action activated!')">Join the League</button>
+            <div class="btn-wrapper">
+                <span class="comic-tooltip">BUY THE YEARBOOK AND BE THE HERO!</span>
+                <button class="hero-btn" id="actionBtn">Make Marvel-ous Memories!</button>
+            </div>
         </div>
     </div>
+
+    <!-- Video Element replacing the screen -->
+    <video id="hero-video">
+        <!-- Update this path to your mp4 file path -->
+        <source src="./output.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
     <script>
         const slider = document.getElementById('slider');
         const slide2 = document.getElementById('slide2');
+        const actionBtn = document.getElementById('actionBtn');
+        const heroVideo = document.getElementById('hero-video');
 
         // Automatically slide to the second image after 4 seconds
         setTimeout(() => {
             slider.style.transform = 'translateX(-100vw)';
             slide2.classList.add('active');
-        }, 4000);
+        }, 5000);
+
+        // Button click action: Show video and play it
+        actionBtn.addEventListener('click', () => {
+            slider.style.display = 'none';
+            heroVideo.style.display = 'block';
+            heroVideo.play();
+        });
+
+        // Trigger alert and redirect when video ends
+        heroVideo.addEventListener('ended', () => {
+            alert("YES! You won! Click OK to go get your finished yearbook!");
+            window.location.href = "https://www.yearbookforever.com"; // Change to your target URL
+        });
     </script>
 
 </body>
